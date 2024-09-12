@@ -43,10 +43,11 @@ function printUsers(){
         userSection.appendChild(userElement); // Append it to the section in the HTML
     }
 }
+
 function addExpense() {
     const amount = Number(document.getElementById('amount').value);
     const payer = document.getElementById('payer').value;
-    const usersInvolved = document.getElementById('participant').value.split(',').map(user => user.trim());
+    const usersInvolved = document.getElementById('selected_participants').value.split(',').map(user => user.trim());
 
     if (isValidExpense(amount, payer, usersInvolved)) {
         expenses.push({ amount, payer, usersInvolved });
@@ -56,7 +57,7 @@ function addExpense() {
 
         document.getElementById('amount').value = "";
         document.getElementById('payer').value = "";
-        document.getElementById('participant').value = "";
+        document.getElementById('selected_participants').value = "";
 
         printExpenses();
         printDetailedBalances(); // Display detailed pairwise balances
@@ -64,7 +65,6 @@ function addExpense() {
         alert('Expense is invalid');
     }
 }
-
 
 function isValidExpense(amount, payer, usersInvolved) {
     if(!amount || amount <= 0) {
@@ -85,6 +85,7 @@ function isValidExpense(amount, payer, usersInvolved) {
         }
     } return true;
 }
+
 function printExpenses() {
     const expensesSection = document.getElementById('exp_history');
     expensesSection.innerHTML = '<h2>Expenses</h2>';
@@ -134,6 +135,37 @@ function printDetailedBalances() {
     });
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------end
+// Attach event listener to the modal to call showParticipants when it's shown
+const participantModal = document.getElementById('participantModal');
+participantModal.addEventListener('shown.bs.modal', function () {
+    showParticipants();
+});
+
+// Function to show the participants list with checkboxes inside the modal
+function showParticipants() {
+    const participantCheckboxes = document.getElementById('participant_checkboxes');
+    participantCheckboxes.innerHTML = ''; // Clear any previous list
+
+    // Create checkboxes for each user
+    users.forEach(user => {
+        const checkboxItem = document.createElement('li');
+        checkboxItem.innerHTML = `<input type="checkbox" value="${user}" id="checkbox_${user}"> ${user}`;
+        participantCheckboxes.appendChild(checkboxItem);
+    });
+}
+
+// Function to confirm selected participants
+function confirmParticipants() {
+    const selected = [];
+    users.forEach(user => {
+        const checkbox = document.getElementById(`checkbox_${user}`);
+        if (checkbox && checkbox.checked) {
+            selected.push(user);
+        }
+    });
+    
+    document.getElementById('selected_participants').value = selected.join(', ');
+}
 
 
 // let users = [];
