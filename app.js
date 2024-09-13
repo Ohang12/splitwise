@@ -3,6 +3,7 @@ let expenses = [];
 let balances = {};
 let pairwiseBalances = {};
 
+
 function addUser() {
 
     const userName = document.getElementById('user_name').value;
